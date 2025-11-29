@@ -102,7 +102,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEST SCREEN 2
+  m_text: TEST SCREEN 4
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -182,12 +182,12 @@ GameObject:
   - component: {fileID: 1378742332059450710}
   - component: {fileID: 7089261450690263778}
   - component: {fileID: 8091920955564417904}
-  - component: {fileID: 1861952246762630421}
+  - component: {fileID: 488461187363778350}
   - component: {fileID: 3333635397348935791}
   - component: {fileID: 2140755252040131147}
   - component: {fileID: 1733071683707396785}
   m_Layer: 5
-  m_Name: TestScreen2
+  m_Name: TestScreen4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -231,7 +231,7 @@ Animator:
   m_GameObject: {fileID: 2556736513347850404}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c4488e28db683f645940d9e9d21e07ec, type: 2}
+  m_Controller: {fileID: 9100000, guid: e4ed13b59411990489a7a2aa18a493e1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -242,7 +242,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1861952246762630421
+--- !u!114 &488461187363778350
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -251,13 +251,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2556736513347850404}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b85fe8bb7d54eef94a893f238d4b157, type: 3}
+  m_Script: {fileID: 11500000, guid: 6249d6f6f5914a5f87d99dbe0cd491f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _openTransitions:
   - {fileID: 3333635397348935791}
-  _closeTransitions:
   - {fileID: 2140755252040131147}
+  _closeTransitions:
   - {fileID: 1733071683707396785}
 --- !u!114 &3333635397348935791
 MonoBehaviour:
@@ -273,9 +273,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _transitionName: In
   _animator: {fileID: 8091920955564417904}
-  _trigger: 
+  _trigger: OpenSlide
   _targetState: Open
 --- !u!114 &2140755252040131147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2556736513347850404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38a4fa1d78444c27b751a1d8ce61872a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transitionName: SlideIn
+  _animator: {fileID: 8091920955564417904}
+  _trigger: OpenSlide
+  _targetState: OpenSlide
+--- !u!114 &1733071683707396785
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -291,22 +307,6 @@ MonoBehaviour:
   _animator: {fileID: 8091920955564417904}
   _trigger: Close
   _targetState: Close
---- !u!114 &1733071683707396785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2556736513347850404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38a4fa1d78444c27b751a1d8ce61872a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _transitionName: SlideOut
-  _animator: {fileID: 8091920955564417904}
-  _trigger: CloseSlide
-  _targetState: CloseSlide
 --- !u!1 &7204542531662274485
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,7 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5660378, g: 0.5660378, b: 0.5660378, a: 1}
+  m_Color: {r: 1, g: 0.94648343, b: 0.68867916, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

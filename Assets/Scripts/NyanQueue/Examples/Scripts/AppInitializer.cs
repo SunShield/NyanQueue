@@ -14,7 +14,7 @@ namespace NyanQueue.Examples
         private void Start()
         {
             _uiManager.SetPrefabProvider(_localPrefabProvider);
-            _uiManager.OpenScreen<TestScreen1, TestScreen1Model>(new ());
+            _uiManager.OpenScreen<TestScreen1, TestScreen1Model>();
         }
     }
 }

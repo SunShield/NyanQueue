@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NyanQueue.Core.ScreenSystem.Settings.Impl;
+using NyanQueue.Core.Utilities.Extensions;
 using UnityEngine;
 
 namespace NyanQueue.Core.ScreenSystem.Settings
@@ -14,19 +15,6 @@ namespace NyanQueue.Core.ScreenSystem.Settings
         private Dictionary<Type, ScreenSetting> _screenSettingsDict;
         private IReadOnlyDictionary<Type, ScreenSetting> ScreenSettingsDict 
             => _screenSettingsDict ??= _screenSettings.ToDictionary(ss => ss.GetType());
-        
-        public ScreenSettings SetOrder(int order)
-        {
-            var orderSetting = _screenSettings.FirstOrDefault(ss => ss.GetType() == typeof(OrderScreenSetting));
-            if (orderSetting != null)
-            {
-                ((OrderScreenSetting)orderSetting).SetOrder(order);
-                return this;
-            }
-            
-            _screenSettings.Add(new OrderScreenSetting(order));
-            return this;
-        }
         
         public ScreenSettings SetCloseBehaviour(ScreenCloseBehaviour closeBehaviour)
         {
@@ -46,6 +34,15 @@ namespace NyanQueue.Core.ScreenSystem.Settings
         {
             var settingExists = ScreenSettingsDict.TryGetValue(typeof(TSetting), out var setting);
             return settingExists ? setting as TSetting : null;
+        }
+
+        public ScreenSettings Merge(ScreenSettings screenSettings)
+        {
+            var settings = new ScreenSettings()
+            {
+                _screenSettings = _screenSettings.MergeWithReplaceByTypeSafe(screenSettings._screenSettings)
+            };
+            return settings;
         }
     }
 }

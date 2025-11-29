@@ -1,4 +1,5 @@
-﻿using NyanQueue.Core.ScreenSystem.Screens;
+﻿using NyanQueue.Core.ScreenSystem.Overrides;
+using NyanQueue.Core.ScreenSystem.Screens;
 using NyanQueue.Core.ScreenSystem.Settings;
 
 namespace NyanQueue.Core.ScreenSystem
@@ -9,6 +10,7 @@ namespace NyanQueue.Core.ScreenSystem
     {
         public TModel Model { get; private set; }
         public ScreenSettings ScreenSettings { get; private set; }
+        public ScreenOpenOverrides OpenOverrides { get; private set; }
 
         public ScreenOpenOperation<TScreen, TModel> SetModel(TModel model)
         {
@@ -19,6 +21,12 @@ namespace NyanQueue.Core.ScreenSystem
         public ScreenOpenOperation<TScreen, TModel> SetSettings(ScreenSettings screenSettings)
         {
             ScreenSettings = screenSettings;
+            return this;
+        }
+        
+        public ScreenOpenOperation<TScreen, TModel> SetOverrides(ScreenOpenOverrides openOverrides)
+        {
+            OpenOverrides = openOverrides;
             return this;
         }
     }

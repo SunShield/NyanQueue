@@ -3,7 +3,7 @@ using NyanQueue.Examples.Scripts.Models;
 
 namespace NyanQueue.Examples.Screens
 {
-    public class TestScreen2 : InitializableScreen<TestScreen2Model>
+    public class TestScreen4 : InitializableScreen<TestScreen4Model>
     {
     }
 }
