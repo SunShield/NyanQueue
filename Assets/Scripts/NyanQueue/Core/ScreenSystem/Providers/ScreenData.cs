@@ -7,6 +7,6 @@ namespace NyanQueue.Core.ScreenSystem.Providers
     public class ScreenData
     {
         public int DefaultOrder;
-        public Screen Screen;
+        public AbstractScreen Screen;
     }
 }

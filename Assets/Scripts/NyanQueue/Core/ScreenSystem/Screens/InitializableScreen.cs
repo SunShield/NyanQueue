@@ -1,8 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
+using NyanQueue.Core.ScreenSystem.Screens.Models;
 
 namespace NyanQueue.Core.ScreenSystem.Screens
 {
-    public abstract class InitializableScreen<TModel> : Screen 
+    public abstract class InitializableScreen<TModel> : AbstractScreen 
         where TModel : ScreenModel
     {
         public bool IsInitialized { get; private set; }

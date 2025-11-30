@@ -1,5 +1,6 @@
 ﻿using NyanQueue.Core.ScreenSystem.Overrides;
 using NyanQueue.Core.ScreenSystem.Screens;
+using NyanQueue.Core.ScreenSystem.Screens.Models;
 using NyanQueue.Core.ScreenSystem.Settings;
 
 namespace NyanQueue.Core.ScreenSystem

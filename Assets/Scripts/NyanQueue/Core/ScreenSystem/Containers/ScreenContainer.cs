@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using Screen = NyanQueue.Core.ScreenSystem.Screens.Screen;
+﻿using NyanQueue.Core.ScreenSystem.Screens;
+using UnityEngine;
 
 namespace NyanQueue.Core.ScreenSystem.Containers
 {
@@ -11,7 +11,7 @@ namespace NyanQueue.Core.ScreenSystem.Containers
         
         public void Setup(int sortingOrder) => _canvas.sortingOrder = sortingOrder;
 
-        public void AddScreen(Screen screen)
+        public void AddScreen(AbstractScreen screen)
         {
             screen.gameObject.transform.SetParent(transform);
             screen.gameObject.transform.localPosition = Vector3.zero;

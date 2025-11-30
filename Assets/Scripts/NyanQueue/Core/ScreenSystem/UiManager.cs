@@ -6,11 +6,11 @@ using NyanQueue.Core.ScreenSystem.Overrides;
 using NyanQueue.Core.ScreenSystem.Overrides.Impl;
 using NyanQueue.Core.ScreenSystem.Providers;
 using NyanQueue.Core.ScreenSystem.Screens;
+using NyanQueue.Core.ScreenSystem.Screens.Models;
 using NyanQueue.Core.ScreenSystem.Settings;
 using NyanQueue.Core.ScreenSystem.Settings.Impl;
 using NyanQueue.Core.Utilities.Classes;
 using UnityEngine;
-using Screen = NyanQueue.Core.ScreenSystem.Screens.Screen;
 
 namespace NyanQueue.Core.ScreenSystem
 {
@@ -22,22 +22,22 @@ namespace NyanQueue.Core.ScreenSystem
         private readonly Dictionary<OrderedTypePair, ScreenOpenOverrides> _defaultOverrides = new();
         private IPrefabProvider _prefabProvider;
         
-        public Screen CurrentScreen { get; set; }
+        public AbstractScreen CurrentScreen { get; set; }
         public Type PreparingScreenType { get; set; }
         public Type CurrentScreenType => CurrentScreen?.GetType();
         
         public void SetPrefabProvider(IPrefabProvider prefabProvider) => _prefabProvider = prefabProvider;
 
         public void RegisterDefaultScreenSettings<TScreen>(ScreenSettings screenSettings)
-            where TScreen : Screen
+            where TScreen : AbstractScreen
         {
             _defaultScreenSettings.TryAdd(typeof(TScreen), new());
             _defaultScreenSettings[typeof(TScreen)].Merge(screenSettings);
         }
 
         public void RegisterDefaultOverrides<TScreen, TPrevScreen>(ScreenOpenOverrides screenOverrides)
-            where TScreen : Screen
-            where TPrevScreen : Screen
+            where TScreen : AbstractScreen
+            where TPrevScreen : AbstractScreen
         {
             var pair = new OrderedTypePair(typeof(TScreen), typeof(TPrevScreen));
             _defaultOverrides.TryAdd(pair, new ScreenOpenOverrides());
@@ -171,7 +171,7 @@ namespace NyanQueue.Core.ScreenSystem
         /// Use to do some custom stuff, like injecting screen's GO here
         /// </summary>
         /// <param name="screen"></param>
-        protected virtual void ProcessScreen(Screen screen) { }
+        protected virtual void ProcessScreen(AbstractScreen screen) { }
         
         public bool IsScreenOpen(Type type) => CurrentScreen != null && CurrentScreen.GetType() == type;
         public bool IsScreenOpen<TScreen>() => IsScreenOpen(typeof(TScreen));
