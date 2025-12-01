@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using NyanQueue.Core.UiSystem.ScreenSystem.Screens.Views;
 using NyanQueue.Core.UiSystem.ScreenSystem.Settings;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem.Screens
         public ScreenSettings Settings { get; private set; }
         
         public void SetSettings(ScreenSettings screenSettings) => Settings = screenSettings;
-        
+
         public virtual async UniTask Open(string transitionName = "")
         {
             await PreOpen();

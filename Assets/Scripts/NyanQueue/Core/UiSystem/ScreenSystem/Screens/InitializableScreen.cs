@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using NyanQueue.Core.UiSystem.ScreenSystem.Screens.Models;
 
 namespace NyanQueue.Core.UiSystem.ScreenSystem.Screens
@@ -15,5 +16,13 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem.Screens
         }
         
         protected virtual UniTask InitializeInternal(TModel model) => UniTask.CompletedTask;
+        
+        private async void OnEnable()
+        {
+            if (!IsInitialized) await UniTask.WaitWhile(() => !IsInitialized);
+            await DoOnEnable();
+        }
+        
+        protected virtual UniTask DoOnEnable() => UniTask.CompletedTask;
     }
 }

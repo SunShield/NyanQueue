@@ -18,7 +18,7 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
         [SerializeField] private UiContainersManager _uiContainersManager;
         
         private readonly Dictionary<Type, ScreenSettings> _defaultScreenSettings = new();
-        private readonly Dictionary<OrderedTypePair, SwitchSettings> _defaultOverrides = new();
+        private readonly Dictionary<OrderedTypePair, SwitchSettings> _defaultSwitchSettings = new();
         private IPrefabProvider _prefabProvider;
         
         public AbstractScreen CurrentScreen { get; set; }
@@ -36,7 +36,7 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
             where TPrevScreen : AbstractScreen
         {
             var pair = new OrderedTypePair(typeof(TScreen), typeof(TPrevScreen));
-            _defaultOverrides.TryAdd(pair, switchSettings);
+            _defaultSwitchSettings.TryAdd(pair, switchSettings);
         }
         
         public async UniTask OpenScreen<TScreen, TModel>()
@@ -73,25 +73,34 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
 
             if (openOperation.Model == null) openOperation.SetModel(new TModel());
             
-            var screenInstance = Instantiate(screenData.Screen);
-            var typedScreen = screenInstance.GetComponent<TScreen>();
-            var settings = GetFinalSettings(openOperation, screenType);
+            var typedScreen = CreateScreenInstance<TScreen, TModel>(screenData);
+            var settings = GetFinalScreenSettings(openOperation, screenType);
             typedScreen.SetSettings(settings);
             ProcessScreen(typedScreen);
             
-            var overrides = GetFinalOverrides(openOperation, screenType);
+            var overrides = GetFinalSwitchSettings(openOperation, screenType);
             var container = _uiContainersManager.GetContainer(settings.Order);
             container.AddScreen(typedScreen);
             
-            await ScreenOpenSequence(typedScreen, openOperation.Model, overrides);
+            await ScreenOpenSequence(typedScreen, openOperation.Model, settings.CloseBehaviour, overrides);
             
             CurrentScreen = typedScreen;
             PreparingScreenType = null;
         }
 
-        private ScreenSettings GetFinalSettings<TScreen, TModel>(ScreenOpenOperation<TScreen, TModel> openOperation, 
+        private TScreen CreateScreenInstance<TScreen, TModel>(ScreenData screenData)
+            where TScreen : InitializableScreen<TModel>
+            where TModel : ScreenModel, new()
+        {
+            var screenInstance = Instantiate(screenData.Screen);
+            screenInstance.gameObject.SetActive(false);
+            return screenInstance.GetComponent<TScreen>();
+        }
+
+        private ScreenSettings GetFinalScreenSettings<TScreen, TModel>(ScreenOpenOperation<TScreen, TModel> openOperation, 
             Type screenType)
-            where TScreen : InitializableScreen<TModel> where TModel : ScreenModel, new()
+            where TScreen : InitializableScreen<TModel> 
+            where TModel : ScreenModel, new()
         {
             _defaultScreenSettings.TryGetValue(screenType, out var screenSettings);
             var settings = screenSettings ?? new();
@@ -99,14 +108,15 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
             return settings;
         }
 
-        private SwitchSettings GetFinalOverrides<TScreen, TModel>(
+        private SwitchSettings GetFinalSwitchSettings<TScreen, TModel>(
             ScreenOpenOperation<TScreen, TModel> openOperation, Type screenType)
-            where TScreen : InitializableScreen<TModel> where TModel : ScreenModel, new()
+            where TScreen : InitializableScreen<TModel> 
+            where TModel : ScreenModel, new()
         {
             SwitchSettings overrides = null;
             if (CurrentScreenType != null)
             {
-                _defaultOverrides.TryGetValue(new OrderedTypePair(screenType, CurrentScreenType), out var defOverrides);
+                _defaultSwitchSettings.TryGetValue(new OrderedTypePair(screenType, CurrentScreenType), out var defOverrides);
                 overrides = defOverrides ?? new();
             }
             else 
@@ -118,26 +128,31 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
             return overrides;
         }
 
-        private async UniTask ScreenOpenSequence<TScreen, TModel>(TScreen typedScreen, TModel model, 
-            SwitchSettings switchSettings)
+        private async UniTask ScreenOpenSequence<TScreen, TModel>(TScreen openingScreen, TModel model, 
+            CloseBehaviour closeBehaviour, SwitchSettings switchSettings)
             where TScreen : InitializableScreen<TModel>
             where TModel : ScreenModel, new()
         {
-            await typedScreen.Initialize(model);
+            await openingScreen.Initialize(model);
 
-            var closeBehaviour = switchSettings.PrevScreenCloseBehaviour;
+            var finalCloseBehaviour = !switchSettings.OverrideCloseBehavior 
+                ? closeBehaviour 
+                : switchSettings.PrevScreenCloseBehaviour;
             if (switchSettings.PrevScreenCloseBehaviour is not CloseBehaviour.WithNext)
             {
-                if (closeBehaviour is CloseBehaviour.BeforeNext) await CloseScreen(switchSettings.PrevScreenAnimation);
-                await typedScreen.Open(switchSettings.CurrentScreenAnimation);
-                if (closeBehaviour is CloseBehaviour.AfterNext) await CloseScreen(switchSettings.PrevScreenAnimation);
+                if (finalCloseBehaviour is CloseBehaviour.BeforeNext) await CloseScreen(switchSettings.PrevScreenAnimation);
+                openingScreen.gameObject.SetActive(true);
+                await openingScreen.Open(switchSettings.CurrentScreenAnimation);
+                if (finalCloseBehaviour is CloseBehaviour.AfterNext) await CloseScreen(switchSettings.PrevScreenAnimation);
             }
             else
             {
+                openingScreen.gameObject.SetActive(true);
                 var current = CloseScreen(switchSettings.PrevScreenAnimation);
-                var next = typedScreen.Open(switchSettings.CurrentScreenAnimation);
+                var next = openingScreen.Open(switchSettings.CurrentScreenAnimation);
                 await UniTask.WhenAll(current, next);
             }
+            ClearScreen();
         }
         
         /// <summary>
@@ -154,11 +169,17 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
         public bool IsScreenPreparingOrOpen(Type type) => IsScreenOpen(type) || IsScreenPreparing(type);
         public bool IsScreenPreparingOrOpen<TScreen>() => IsScreenPreparingOrOpen(typeof(TScreen));
 
-        public async UniTask CloseScreen(string transitionName = "")
+        private async UniTask CloseScreen(string transitionName = "")
         {
             if (CurrentScreen == null) return;
             
             await CurrentScreen.Close(transitionName);
+        }
+
+        private void ClearScreen()
+        {
+            if (CurrentScreen == null) return;
+            
             Destroy(CurrentScreen.gameObject);
             CurrentScreen = null;
         }
