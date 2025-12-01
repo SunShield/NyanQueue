@@ -1,10 +1,9 @@
-﻿using System.Threading;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace NyanQueue.Examples.Transitions
+namespace NyanQueue.Core.UiSystem.Utilities.Classes.Animations
 {
-    public class AnimStateTransition : AbstractTransition
+    public class AnimStateAnimation : AbstractAnimation
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private string _trigger;

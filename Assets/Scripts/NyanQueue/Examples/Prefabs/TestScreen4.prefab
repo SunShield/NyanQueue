@@ -268,10 +268,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 841aca072e5046be900df56a14224d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _openTransitions:
+  _openAnimations:
   - {fileID: 3333635397348935791}
   - {fileID: 2140755252040131147}
-  _closeTransitions:
+  _closeAnimations:
   - {fileID: 1733071683707396785}
 --- !u!114 &3333635397348935791
 MonoBehaviour:

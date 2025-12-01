@@ -1,9 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace NyanQueue.Examples.Transitions
+namespace NyanQueue.Core.UiSystem.Utilities.Classes.Animations
 {
-    public abstract class AbstractTransition : MonoBehaviour
+    public abstract class AbstractAnimation : MonoBehaviour
     {
         [SerializeField] private string _transitionName;
         

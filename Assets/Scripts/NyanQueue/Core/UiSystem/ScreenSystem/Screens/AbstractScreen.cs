@@ -14,20 +14,20 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem.Screens
         
         public void SetSettings(ScreenSettings screenSettings) => Settings = screenSettings;
 
-        public virtual async UniTask Open(string transitionName = "")
+        public virtual async UniTask Open(string animationName = "")
         {
             await PreOpen();
-            await BaseView.Open(transitionName);
+            await BaseView.Open(animationName);
             await PostOpen();
         }
         
         protected virtual UniTask PreOpen() => UniTask.CompletedTask;
         protected virtual UniTask PostOpen() => UniTask.CompletedTask;
 
-        public virtual async UniTask Close(string transitionName = "")
+        public virtual async UniTask Close(string animationName = "")
         {
             await PreClose();
-            await BaseView.Close(transitionName);
+            await BaseView.Close(animationName);
             await PostClose();
         }
         

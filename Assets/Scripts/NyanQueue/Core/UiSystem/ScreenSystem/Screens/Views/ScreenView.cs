@@ -1,54 +1,55 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using NyanQueue.Examples.Transitions;
+using NyanQueue.Core.UiSystem.Utilities.Classes.Animations;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace NyanQueue.Core.UiSystem.ScreenSystem.Screens.Views
 {
     public abstract class ScreenView : MonoBehaviour
     {
-        [SerializeField] private List<AbstractTransition> _openTransitions;
-        [SerializeField] private List<AbstractTransition> _closeTransitions;
+        [SerializeField] private List<AbstractAnimation> _openAnimations = new();
+        [SerializeField] private List<AbstractAnimation> _closeAnimations = new();
         
-        protected AbstractTransition DefaultOpenTransition => _openTransitions?.FirstOrDefault();
-        protected AbstractTransition DefaultCloseTransition => _closeTransitions?.FirstOrDefault();
+        protected AbstractAnimation DefaultOpenAnimation => _openAnimations?.FirstOrDefault();
+        protected AbstractAnimation DefaultCloseAnimation => _closeAnimations?.FirstOrDefault();
         
-        public virtual async UniTask Open(string transitionName = "")
+        public virtual async UniTask Open(string animationName = "")
         {
             await PreOpen();
-            await WaitForTransition(transitionName, DefaultOpenTransition, _openTransitions);
+            await WaitForAnimation(animationName, DefaultOpenAnimation, _openAnimations);
             await PostOpen();
         }
         
         protected virtual UniTask PreOpen() => UniTask.CompletedTask;
         protected virtual UniTask PostOpen() => UniTask.CompletedTask;
 
-        public virtual async UniTask Close(string transitionName = "")
+        public virtual async UniTask Close(string animationName = "")
         {
             await PreClose();
-            await WaitForTransition(transitionName, DefaultCloseTransition, _closeTransitions);
+            await WaitForAnimation(animationName, DefaultCloseAnimation, _closeAnimations);
             await PostClose();
         }
         
         protected virtual UniTask PreClose() => UniTask.CompletedTask;
         protected virtual UniTask PostClose() => UniTask.CompletedTask;
 
-        private async UniTask WaitForTransition(string transitionName,
-            AbstractTransition defaultTransition, List<AbstractTransition> transitions)
+        private async UniTask WaitForAnimation(string animationName,
+            AbstractAnimation defaultAnimation, List<AbstractAnimation> transitions)
         {
-            var transition = GetTransition(transitionName, defaultTransition, transitions);
+            var transition = GetAnimation(animationName, defaultAnimation, transitions);
             if (transition == null) return;
             await transition.Run();
         }
 
-        private AbstractTransition GetTransition(string transitionName,
-            AbstractTransition defaultTransition, List<AbstractTransition> transitions)
+        private AbstractAnimation GetAnimation(string animationName,
+            AbstractAnimation defaultAnimation, List<AbstractAnimation> transitions)
         {
-            if (string.IsNullOrEmpty(transitionName)) return defaultTransition;
+            if (string.IsNullOrEmpty(animationName)) return defaultAnimation;
             
-            var transition = transitions.FirstOrDefault(t => t.TransitionName == transitionName);
-            return transition == null ? defaultTransition : transition;
+            var transition = transitions.FirstOrDefault(t => t.TransitionName == animationName);
+            return transition == null ? defaultAnimation : transition;
         }
     }
 }
