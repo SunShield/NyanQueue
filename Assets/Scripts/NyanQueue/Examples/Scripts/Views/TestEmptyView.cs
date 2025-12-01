@@ -1,4 +1,4 @@
-﻿using NyanQueue.Core.ScreenSystem.Screens.Views;
+﻿using NyanQueue.Core.UiSystem.ScreenSystem.Screens.Views;
 
 namespace NyanQueue.Examples.Views
 {

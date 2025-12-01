@@ -1,20 +1,21 @@
-using NyanQueue.Core.ScreenSystem;
-using NyanQueue.Core.ScreenSystem.Providers.Impl;
+using NyanQueue.Core.UiSystem.ScreenSystem;
+using NyanQueue.Core.UiSystem.ScreenSystem.Providers.Impl;
 using NyanQueue.Examples.Screens;
 using NyanQueue.Examples.Scripts.Models;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace NyanQueue.Examples
 {
     public class AppInitializer : MonoBehaviour
     {
         [SerializeField] private DefaultLocalPrefabProvider _localPrefabProvider;
-        [SerializeField] private UiManager _uiManager;
+        [FormerlySerializedAs("_uiManager")] [SerializeField] private ScreenManager _screenManager;
 
         private void Start()
         {
-            _uiManager.SetPrefabProvider(_localPrefabProvider);
-            _uiManager.OpenScreen<TestScreen1, TestScreen1Model>();
+            _screenManager.SetPrefabProvider(_localPrefabProvider);
+            _screenManager.OpenScreen<TestScreen1, TestScreen1Model>();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using NyanQueue.Core.ScreenSystem.Screens;
+﻿using NyanQueue.Core.UiSystem.ScreenSystem.Screens;
 using NyanQueue.Examples.Scripts.Models;
 using NyanQueue.Examples.Views;
 

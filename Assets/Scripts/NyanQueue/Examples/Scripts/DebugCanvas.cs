@@ -1,17 +1,20 @@
-﻿using NyanQueue.Core.ScreenSystem;
-using NyanQueue.Core.ScreenSystem.Overrides;
-using NyanQueue.Core.ScreenSystem.Settings;
-using NyanQueue.Core.ScreenSystem.Settings.Impl;
+﻿using NyanQueue.Core.UiSystem.ScreenSystem;
+using NyanQueue.Core.UiSystem.ScreenSystem.Overrides;
+using NyanQueue.Core.UiSystem.ScreenSystem.Settings;
+using NyanQueue.Core.UiSystem.ScreenSystem.Settings.Impl;
+using NyanQueue.Core.UiSystem.ScreenSystem.Switching;
+using NyanQueue.Core.UiSystem.Utilities.Enums;
 using NyanQueue.Examples.Screens;
 using NyanQueue.Examples.Scripts.Models;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace NyanQueue.Examples
 {
     public class DebugCanvas : MonoBehaviour
     {
-        [SerializeField] private UiManager _uiManager;
+        [FormerlySerializedAs("_uiManager")] [SerializeField] private ScreenManager _screenManager;
         [SerializeField] private Button _screen1Button;
         [SerializeField] private Button _screen2Button;
         [SerializeField] private Button _screen3Button;
@@ -25,47 +28,41 @@ namespace NyanQueue.Examples
             _screen3Button.onClick.AddListener(Screen3ButtonClickHandler);
             _screen4Button.onClick.AddListener(Screen4ButtonClickHandler);
             _screen5Button.onClick.AddListener(Screen5ButtonClickHandler);
+
+            _screenManager.RegisterDefaultScreenSettings<TestScreen2>(new ScreenSettings(CloseBehaviour.AfterNext));
+            _screenManager.RegisterDefaultScreenSettings<TestScreen4>(new ScreenSettings(CloseBehaviour.AfterNext));
+            _screenManager.RegisterDefaultScreenSettings<TestScreen5>(new ScreenSettings(CloseBehaviour.AfterNext));
             
-            _uiManager.RegisterDefaultScreenSettings<TestScreen2>(
-                new ScreenSettings()
-                    .SetCloseBehaviour(ScreenCloseBehaviour.AfterNext));
-            _uiManager.RegisterDefaultScreenSettings<TestScreen4>(
-                new ScreenSettings()
-                    .SetCloseBehaviour(ScreenCloseBehaviour.AfterNext));
-            _uiManager.RegisterDefaultScreenSettings<TestScreen5>(
-                new ScreenSettings()
-                    .SetCloseBehaviour(ScreenCloseBehaviour.AfterNext));
-            
-            _uiManager.RegisterDefaultOverrides<TestScreen4, TestScreen2>(
-                new ScreenOpenOverrides()
-                    .SetPrevScreenCloseBehaviour(ScreenCloseBehaviour.WithNext)
-                    .SetCurrentScreenTransition("SlideIn")
-                    .SetPrevScreenTransition("SlideOut"));
+            _screenManager.RegisterDefaultSwitchSettings<TestScreen4, TestScreen2>(
+                new SwitchSettings()
+                    .SetPrevScreenCloseBehaviour(CloseBehaviour.WithNext)
+                    .SetCurrentScreenAnimation("SlideIn")
+                    .SetPrevScreenAnimation("SlideOut"));
         }
 
         private async void Screen1ButtonClickHandler()
         {
-            await _uiManager.OpenScreen<TestScreen1, TestScreen1Model>();
+            await _screenManager.OpenScreen<TestScreen1, TestScreen1Model>();
         }
 
         private async void Screen2ButtonClickHandler()
         {
-            await _uiManager.OpenScreen<TestScreen2, TestScreen2Model>();
+            await _screenManager.OpenScreen<TestScreen2, TestScreen2Model>();
         }
 
         private async void Screen3ButtonClickHandler()
         {
-            await _uiManager.OpenScreen<TestScreen3, TestScreen3Model>();
+            await _screenManager.OpenScreen<TestScreen3, TestScreen3Model>();
         }
 
         private async void Screen4ButtonClickHandler()
         {
-            await _uiManager.OpenScreen<TestScreen4, TestScreen4Model>();
+            await _screenManager.OpenScreen<TestScreen4, TestScreen4Model>();
         }
 
         private async void Screen5ButtonClickHandler()
         {
-            await _uiManager.OpenScreen<TestScreen5, TestScreen5Model>();
+            await _screenManager.OpenScreen<TestScreen5, TestScreen5Model>();
         }
     }
 }
