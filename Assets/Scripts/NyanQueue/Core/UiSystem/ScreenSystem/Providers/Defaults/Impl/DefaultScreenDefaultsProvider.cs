@@ -11,22 +11,16 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem.Providers.Defaults.Impl
     {
         [SerializeField] private List<ScreenDefaults> _defaults = new();
         
-        private Dictionary<string, Type> _typeNameMap;
-        
         public async UniTask ProvideDefaults(ScreenManager manager)
         {
-            _typeNameMap = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .ToDictionary(t => t.Name, t => t, StringComparer.Ordinal);
-            
             foreach (var screenDefault in _defaults)
             {
-                var type = _typeNameMap[screenDefault.ScreenType];
+                var type = screenDefault.ScreenType.Type;
                 manager.RegisterDefaultScreenSettings(type, screenDefault.ScreenSettings);
 
                 foreach (var switchDefault in screenDefault.SwitchDefaults)
                 {
-                    var prevType = _typeNameMap[switchDefault.PrevScreenType];
+                    var prevType = switchDefault.PrevScreenType.Type;
                     manager.RegisterDefaultSwitchSettings(type, prevType, switchDefault.SwitchSettings);
                 }
             }

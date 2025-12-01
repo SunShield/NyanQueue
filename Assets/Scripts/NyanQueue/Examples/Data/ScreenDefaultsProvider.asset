@@ -13,27 +13,37 @@ MonoBehaviour:
   m_Name: ScreenDefaultsProvider
   m_EditorClassIdentifier: 
   _defaults:
-  - <ScreenType>k__BackingField: TestScreen1
+  - <ScreenType>k__BackingField:
+      _typeName: NyanQueue.Examples.Screens.TestScreen1, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
     <ScreenSettings>k__BackingField:
       Order: 0
       CloseBehaviour: 1
     <SwitchDefaults>k__BackingField: []
-  - <ScreenType>k__BackingField: TestScreen2
+  - <ScreenType>k__BackingField:
+      _typeName: NyanQueue.Examples.Screens.TestScreen2, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
     <ScreenSettings>k__BackingField:
       Order: 0
       CloseBehaviour: 1
     <SwitchDefaults>k__BackingField: []
-  - <ScreenType>k__BackingField: TestScreen3
+  - <ScreenType>k__BackingField:
+      _typeName: NyanQueue.Examples.Screens.TestScreen3, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
     <ScreenSettings>k__BackingField:
       Order: 0
       CloseBehaviour: 1
     <SwitchDefaults>k__BackingField: []
-  - <ScreenType>k__BackingField: TestScreen4
+  - <ScreenType>k__BackingField:
+      _typeName: NyanQueue.Examples.Screens.TestScreen4, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
     <ScreenSettings>k__BackingField:
       Order: 0
       CloseBehaviour: 1
     <SwitchDefaults>k__BackingField:
-    - <PrevScreenType>k__BackingField: TestScreen2
+    - <PrevScreenType>k__BackingField:
+        _typeName: NyanQueue.Examples.Screens.TestScreen2, Assembly-CSharp, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
       <SwitchSettings>k__BackingField:
         <OverrideCloseBehavior>k__BackingField: 1
         <OverridePrevAnimation>k__BackingField: 1
