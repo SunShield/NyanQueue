@@ -1,7 +1,7 @@
 ﻿using System;
 using NyanQueue.Core.UiSystem.Utilities.Enums;
 
-namespace NyanQueue.Core.UiSystem.ScreenSystem.Settings
+namespace NyanQueue.Core.UiSystem.Utilities.Classes.Settings
 {
     [Serializable]
     public class ScreenSettings

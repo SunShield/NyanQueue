@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using NyanQueue.Core.UiSystem.ScreenSystem.Containers;
 using NyanQueue.Core.UiSystem.ScreenSystem.Providers;
+using NyanQueue.Core.UiSystem.ScreenSystem.Providers.Prefab;
 using NyanQueue.Core.UiSystem.ScreenSystem.Screens;
 using NyanQueue.Core.UiSystem.ScreenSystem.Screens.Models;
-using NyanQueue.Core.UiSystem.ScreenSystem.Settings;
-using NyanQueue.Core.UiSystem.ScreenSystem.Switching;
+using NyanQueue.Core.UiSystem.Utilities.Classes.Settings;
 using NyanQueue.Core.UiSystem.Utilities.Enums;
 using NyanQueue.Core.Utilities.Classes;
 using UnityEngine;
@@ -19,23 +19,29 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
         
         private readonly Dictionary<Type, ScreenSettings> _defaultScreenSettings = new();
         private readonly Dictionary<OrderedTypePair, SwitchSettings> _defaultSwitchSettings = new();
-        private IPrefabProvider _prefabProvider;
+        private IScreenPrefabProvider _prefabProvider;
         
         public AbstractScreen CurrentScreen { get; set; }
         public Type PreparingScreenType { get; set; }
         public Type CurrentScreenType => CurrentScreen?.GetType();
         
-        public void SetPrefabProvider(IPrefabProvider prefabProvider) => _prefabProvider = prefabProvider;
+        public void SetPrefabProvider(IScreenPrefabProvider prefabProvider) => _prefabProvider = prefabProvider;
 
         public void RegisterDefaultScreenSettings<TScreen>(ScreenSettings screenSettings)
             where TScreen : AbstractScreen
-            => _defaultScreenSettings.TryAdd(typeof(TScreen), screenSettings);
+            => RegisterDefaultScreenSettings(typeof(TScreen), screenSettings);
+        
+        public void RegisterDefaultScreenSettings(Type screenType, ScreenSettings screenSettings)
+            => _defaultScreenSettings.TryAdd(screenType, screenSettings);
 
         public void RegisterDefaultSwitchSettings<TScreen, TPrevScreen>(SwitchSettings switchSettings)
             where TScreen : AbstractScreen
             where TPrevScreen : AbstractScreen
+            => RegisterDefaultSwitchSettings(typeof(TScreen), typeof(TPrevScreen), switchSettings);
+
+        public void RegisterDefaultSwitchSettings(Type screenType, Type prevSceenType, SwitchSettings switchSettings)
         {
-            var pair = new OrderedTypePair(typeof(TScreen), typeof(TPrevScreen));
+            var pair = new OrderedTypePair(screenType, prevSceenType);
             _defaultSwitchSettings.TryAdd(pair, switchSettings);
         }
         
@@ -64,16 +70,16 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
             
             var screenType = typeof(TScreen);
             PreparingScreenType = screenType;
-            var screenData = await _prefabProvider.ProvideScreen(screenType);
-            if (screenData == null)
+            var screenPrefab = await _prefabProvider.ProvidePrefab(screenType);
+            if (screenPrefab == null)
             {
-                Debug.LogError($"[UiManager] Screen {screenType} not found");
+                Debug.LogError($"[UiManager] Screen {screenType} prefab not found");
                 return;
             }
 
             if (openOperation.Model == null) openOperation.SetModel(new TModel());
             
-            var typedScreen = CreateScreenInstance<TScreen, TModel>(screenData);
+            var typedScreen = CreateScreenInstance<TScreen, TModel>(screenPrefab);
             var settings = GetFinalScreenSettings(openOperation, screenType);
             typedScreen.SetSettings(settings);
             ProcessScreen(typedScreen);
@@ -88,11 +94,11 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
             PreparingScreenType = null;
         }
 
-        private TScreen CreateScreenInstance<TScreen, TModel>(ScreenData screenData)
+        private TScreen CreateScreenInstance<TScreen, TModel>(AbstractScreen screenPrefab)
             where TScreen : InitializableScreen<TModel>
             where TModel : ScreenModel, new()
         {
-            var screenInstance = Instantiate(screenData.Screen);
+            var screenInstance = Instantiate(screenPrefab);
             screenInstance.gameObject.SetActive(false);
             return screenInstance.GetComponent<TScreen>();
         }
@@ -137,19 +143,19 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
 
             var finalCloseBehaviour = !switchSettings.OverrideCloseBehavior 
                 ? closeBehaviour 
-                : switchSettings.PrevScreenCloseBehaviour;
-            if (switchSettings.PrevScreenCloseBehaviour is not CloseBehaviour.WithNext)
+                : switchSettings.PrevCloseBehaviour;
+            if (switchSettings.PrevCloseBehaviour is not CloseBehaviour.WithNext)
             {
-                if (finalCloseBehaviour is CloseBehaviour.BeforeNext) await CloseScreen(switchSettings.PrevScreenAnimation);
+                if (finalCloseBehaviour is CloseBehaviour.BeforeNext) await CloseScreen(switchSettings.PrevAnimation);
                 openingScreen.gameObject.SetActive(true);
-                await openingScreen.Open(switchSettings.CurrentScreenAnimation);
-                if (finalCloseBehaviour is CloseBehaviour.AfterNext) await CloseScreen(switchSettings.PrevScreenAnimation);
+                await openingScreen.Open(switchSettings.CurAnimation);
+                if (finalCloseBehaviour is CloseBehaviour.AfterNext) await CloseScreen(switchSettings.PrevAnimation);
             }
             else
             {
                 openingScreen.gameObject.SetActive(true);
-                var current = CloseScreen(switchSettings.PrevScreenAnimation);
-                var next = openingScreen.Open(switchSettings.CurrentScreenAnimation);
+                var current = CloseScreen(switchSettings.PrevAnimation);
+                var next = openingScreen.Open(switchSettings.CurAnimation);
                 await UniTask.WhenAll(current, next);
             }
             ClearScreen();

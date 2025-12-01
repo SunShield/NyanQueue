@@ -1,7 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using NyanQueue.Core.UiSystem.ScreenSystem.Screens.Views;
-using NyanQueue.Core.UiSystem.ScreenSystem.Settings;
+using NyanQueue.Core.UiSystem.Utilities.Classes.Settings;
 using UnityEngine;
 
 namespace NyanQueue.Core.UiSystem.ScreenSystem.Screens

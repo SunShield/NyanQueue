@@ -1,6 +1,6 @@
 ﻿using NyanQueue.Core.UiSystem.ScreenSystem.Screens;
 using NyanQueue.Core.UiSystem.ScreenSystem.Screens.Models;
-using NyanQueue.Core.UiSystem.ScreenSystem.Switching;
+using NyanQueue.Core.UiSystem.Utilities.Classes.Settings;
 using NyanQueue.Core.UiSystem.Utilities.Enums;
 
 namespace NyanQueue.Core.UiSystem.ScreenSystem
@@ -9,10 +9,10 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
         where TScreen : InitializableScreen<TModel>
         where TModel : ScreenModel
     {
-        public TModel                  Model                   { get; private set; }
-        public int?                    OrderOverride           { get; private set; }
-        public CloseBehaviour?         CloseBehaviourOverride  { get; private set; }
-        public SwitchSettingsOverrides SwitchSettingsOverrides { get; private set; }
+        public TModel          Model                   { get; private set; }
+        public int?            OrderOverride           { get; private set; }
+        public CloseBehaviour? CloseBehaviourOverride  { get; private set; }
+        public SwitchSettings  SwitchSettingsOverrides { get; private set; }
 
         public ScreenOpenOperation<TScreen, TModel> SetModel(TModel model)
         {
@@ -32,7 +32,7 @@ namespace NyanQueue.Core.UiSystem.ScreenSystem
             return this;
         }
 
-        public ScreenOpenOperation<TScreen, TModel> SetSwitchSettings(SwitchSettingsOverrides overrides)
+        public ScreenOpenOperation<TScreen, TModel> SetSwitchSettings(SwitchSettings overrides)
         {
             SwitchSettingsOverrides = overrides;
             return this;

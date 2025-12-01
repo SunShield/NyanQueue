@@ -3,7 +3,6 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using NyanQueue.Core.UiSystem.Utilities.Classes.Animations;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace NyanQueue.Core.UiSystem.ScreenSystem.Screens.Views
 {
